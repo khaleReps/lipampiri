@@ -1,6 +1,11 @@
-# Lipampiri Django Project
+# Lipampiri
 
-This is the Lipampiri Django project, a platform for [describe what the project does].
+
+This is a simple journaling web application built using Django, designed for everyday use in the workplace. It allows users to create, view, and delete journal entries
+
+
+This Django project has a comprehensive user management system with integrated settings, profiles, and membership features It's designed to handle user authentication, user-specific settings, and profile information. 
+
 
 ## Getting Started
 
