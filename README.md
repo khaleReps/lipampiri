@@ -54,11 +54,11 @@ The project will be accessible at http://localhost:8000.</br>
 ## Contributing
 If you'd like to contribute to this project, please follow the standard Git workflow:
 
-1.Fork the repository.
-2.Create a new branch for your feature or bug fix.
-3.Make your changes and commit them.
-4.Push your branch to your forked repository.
-5.Create a pull request.
+1.Fork the repository.</br>
+2.Create a new branch for your feature or bug fix.</br>
+3.Make your changes and commit them.</br>
+4.Push your branch to your forked repository.</br>
+5.Create a pull request.</br>
 
 License
 This project is licensed under the MIT License.
