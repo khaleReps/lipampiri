@@ -16,40 +16,40 @@ This Django project has a comprehensive user management system with integrated s
 
 ### Installation
 
-1. Clone the repository to your local machine:
+1. Clone the repository to your local machine:</br>
    `git clone https://github.com/ktsoaela/lipampiri.git`
 
 
-2. Navigate to the project directory:
+2. Navigate to the project directory:</br>
     `cd lipampiri`
 
 
-3. Create a virtual environment (optional but recommended):
+3. Create a virtual environment (optional but recommended):</br>
     `python -m venv`
 
-4. Activate the virtual environment:
-    . On Windows:
+4. Activate the virtual environment:</br>
+    . On Windows:</br>
     `venv\Scripts\activate`
 
-    .On macOS and Linux:
+    .On macOS and Linux:</br>
     `source venv/bin/activate`
 
-5. Install the project dependencies:
+5. Install the project dependencies:</br>
     `pip install -r requirements.txt`
 
 
-6. Create a .env file in the project root and add your environment variables (e.g., SECRET_KEY, DEBUG, etc.).
+6. Create a .env file in the project root and add your environment variables (e.g., SECRET_KEY, DEBUG, etc.).</br>
 
-7. Apply migrations to set up the database:
+7. Apply migrations to set up the database:</br>
     `python manage.py migrate`
 
 
 ## Usage
-To start the development server, run the following command:
+To start the development server, run the following command:</br>
     `python manage.py runserver`
 
 
-The project will be accessible at http://localhost:8000.
+The project will be accessible at http://localhost:8000.</br>
 
 ## Contributing
 If you'd like to contribute to this project, please follow the standard Git workflow:
