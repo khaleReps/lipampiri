@@ -1,1 +1,5 @@
-LIPAMPIRI_old/
+# Ignore the database file
+db.sqlite3
+
+# Ignore the .env file
+.env

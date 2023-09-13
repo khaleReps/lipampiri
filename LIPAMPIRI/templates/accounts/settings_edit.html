@@ -1,0 +1,95 @@
+{% extends "base_internal.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+ 
+    <div class="row">
+        <div class="col-md-6">
+          <h1>Settings</h1>
+        </div>
+        <div class="col-md-6">
+ 
+        </div>
+    </div>
+
+    <ul class="list-group list-group-horizontal">
+
+        <a  href="/">
+            <li class="list-group-item">                 
+                <i class='bx bx-home'></i>
+            </li>
+        </a>
+
+        <a  href="{% url 'accounts:settings' %}">
+            <li class="list-group-item">                 
+                <i class='bx bx-arrow-back' ></i>
+            </li>
+        </a>
+       
+
+        <a  href="">
+            <li class="list-group-item">                 
+                <i class='bx bx-check-square'></i>
+            </li>
+        </a>
+
+        <a  href="">
+            <li class="list-group-item">                 
+                <i class='bx bx-trash' ></i>
+            </li>
+        </a>
+        
+    </ul>
+
+    <div class="py-3">
+
+
+
+
+
+
+
+
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+<!-- Add the following script block to your template -->
+
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle form submission on bx-check-square click
+  document.querySelector('.bx-check-square').addEventListener('click', function() {
+    document.querySelector('form').submit();
+  });
+
+  // Confirm deletion on bx-trash click
+  document.querySelector('.bx-trash').addEventListener('click', function() {
+    var confirmDelete = confirm('Are you sure you want to delete your profile?');
+    if (confirmDelete) {
+      // Redirect to delete view or submit a delete form
+      // Example using form submission (assuming you have a delete URL)
+      var deleteForm = document.createElement('form');
+      deleteForm.method = 'POST';
+      deleteForm.action = '{% url "accounts:delete_profile" %}'; // Replace with your delete URL
+      deleteForm.style.display = 'none';
+      document.body.appendChild(deleteForm);
+      deleteForm.submit();
+    }
+  });
+});
+</script>
+{% endblock script %}

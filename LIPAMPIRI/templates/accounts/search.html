@@ -1,0 +1,17 @@
+{% extends 'base_internal.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Search Results for "{{ query }}"</h1>
+
+    {% if results %}
+        <ul>
+            {% for entry in results %}
+                <li><a href="{% url 'journal:entry_detail' entry.pk %}">{{ entry.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}

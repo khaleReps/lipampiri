@@ -1,0 +1,67 @@
+{% load static %}
+<header class="p-3 mb-3 border-bottom bg-dark text-white">
+  <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+              Project
+          </a>
+
+          <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{% url 'journal:entry_list' %}" class="nav-link px-2 link-secondary text-light">Overview</a></li>
+            <!-- <li><a href="#" class="nav-link px-2 link-secondary text-light">Other Link</a></li> -->
+            
+        </ul>
+        
+
+          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{% url 'accounts:search_view' %}" method="get">
+            <input type="search" class="form-control" placeholder="Search..." aria-label="Search" name="q">
+          </form>
+        
+
+          {% if user.is_authenticated %}
+          <div class="dropdown text-end">
+              <a href="#" class="d-block dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" alt="{{ user.username }}" width="32" height="32" class="rounded-circle">
+                {% else %}
+                    <img src="{% static 'images/profile/default_profile.png' %}" alt="{{ user.username }}" width="32" height="32" class="rounded-circle">
+                {% endif %}
+              </a>
+              <ul class="dropdown-menu text-small bg-dark">
+                  <li><a class="dropdown-item text-light" href="{% url 'accounts:account' %}">{{ user.username }}</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-light" href="{% url 'accounts:settings' %}">Settings</a></li>
+                  <li><a class="dropdown-item text-light" href="{% url 'accounts:profile' %}">Profile</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-light" href="{% url 'accounts:logout' %}">Sign out</a></li>
+              </ul>
+          </div>
+      {% else %}
+          <!-- <div class="dropdown text-end">
+              <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                  <li><a href="{% url 'accounts:register' %}" class="nav-link px-2 link-light">Register</a></li>
+                  <li><a href="{% url 'accounts:login' %}" class="nav-link px-2 link-light">Login</a></li>
+              </ul>
+          </div> -->
+      {% endif %}
+      
+
+      </div>
+  </div>
+</header>
+
+{% block style %}
+<style>
+/* Custom hover styles for links */
+.link-light:focus, .link-light:hover {
+    color: #565e64!important;
+    background-color: none!important;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #565e64!important;
+    background-color: transparent!important;
+}
+
+</style>
+{% endblock %}
