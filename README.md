@@ -18,8 +18,8 @@ This Django project has a comprehensive user management system with integrated s
 
 1. Clone the repository to your local machine:
 
-   ```bash
-   git clone https://github.com/your-username/lipampiri.git
+   `bash
+   git clone https://github.com/ktsoaela/lipampiri.git
 
 
 2. Navigate to the project directory:
