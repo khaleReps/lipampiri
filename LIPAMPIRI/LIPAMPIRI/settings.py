@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Pip Packages
-    # 'djangorestframework',
+    'rest_framework',
+    'django_countries',
 
     # Custom Apps 
     'journal',

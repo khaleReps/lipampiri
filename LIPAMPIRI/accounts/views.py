@@ -10,8 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import Http404
 from .models import CustomUser, UserProfile
-
-
+from datetime import timedelta, datetime
 
 from journal.models import Entry
 
@@ -44,7 +43,7 @@ class CustomRegisterView(generic.CreateView):
                 username=user.username,
                 email=user.email,
                 phone_number="",
-                profile_picture=None,
+                profile_picture=user.profile_image,
                 communication_preference="email",
                 notification_frequency="daily",
                 visibility_of_profile="public",
@@ -66,9 +65,7 @@ class CustomRegisterView(generic.CreateView):
                 time_zone="UTC",  # Set your default time zone
                 date_format="YYYY-MM-DD",  # Set your default date format
                 notification_preferences="",
-                profile_information="",
-                username_email="",
-                password="",
+                profile_information="",  
                 two_factor_authentication=False,
                 privacy_settings="",
                 security_preferences="",
@@ -90,14 +87,20 @@ class CustomRegisterView(generic.CreateView):
             )
             print("UserSettings created successfully")
 
+            is_trial = form.cleaned_data['membership_type'] == 'Free Trail'
+            today = datetime.now().date()
+            expiration_date = today + timedelta(days=30)
+            renewal_date = today + timedelta(days=30) if not is_trial else None
+
 
             # Create a default UserMembership for the user
             membership = UserMembership.objects.create(
                 user=user,
-                membership_type="Free",
-                expiration_date=None,
-                is_active=True,
-                is_trial=False,
+                membership_type="Free Trail",
+                expiration_date=expiration_date,
+                renewal_date=renewal_date,
+                is_active=not is_trial,
+                is_trial=is_trial,
                 payment_status="Pending",
                 payment_method="Credit Card"
             )

@@ -9,13 +9,26 @@ class CustomUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
+    membership_type = forms.CharField(
+        label='Membership Type',
+        widget=forms.Select(choices=UserMembership.MEMBERSHIP_CHOICES, attrs={'class': 'form-control'}),
+    )
+
     class Meta:
         model = CustomUser
-        fields = ['username', 'email']  
+        fields = ['username', 'email', 'name', 'surname', 'country', 'date_of_birth', 'contact_number', 'membership_type']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'surname': forms.TextInput(attrs={'class': 'form-control'}),
+            'profile_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'country': forms.Select(attrs={'class': 'form-control'}),
+            
+            'contact_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+12125552368'}),
         }
+
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -29,7 +42,32 @@ class CustomUserCreationForm(forms.ModelForm):
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
+
+            # Try to get existing user profile or create a new one
+            user_profile, created = UserProfile.objects.get_or_create(user=user)
+            user_profile.first_name = user.name
+            user_profile.last_name = user.surname
+            user_profile.location = user.country
+            user_profile.date_of_birth = user.date_of_birth
+            user_profile.phone_number = user.contact_number
+
+            user_profile.full_name = f"{user.name} {user.surname}"
+            user_profile.username = user.username
+            user_profile.email = user.email
+
+            user_profile.save()
+
+            # Try to get existing user settings or create a new one
+            user_settings, created = UserSettings.objects.get_or_create(user=user)
+            user_settings.first_name = user.name
+            user_settings.last_name = user.surname
+            user_settings.username_email = user.email
+            user_settings.password = user.password
+            user_settings.save()
+
         return user
+
+
 
 class CustomLoginForm(AuthenticationForm):
     class Meta:
@@ -39,6 +77,20 @@ class CustomLoginForm(AuthenticationForm):
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control'}),
         }
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(label='Old Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password2 = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean_new_password2(self):
+        new_password1 = self.cleaned_data.get("new_password1")
+        new_password2 = self.cleaned_data.get("new_password2")
+        if new_password1 and new_password2 and new_password1 != new_password2:
+            raise forms.ValidationError("New passwords do not match")
+        return new_password2
+
+
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -65,10 +117,10 @@ class UserSettingsForm(forms.ModelForm):
             'language': forms.TextInput(attrs={'class': 'form-control'}),
             'time_zone': forms.TextInput(attrs={'class': 'form-control'}),
             'date_format': forms.TextInput(attrs={'class': 'form-control'}),
-            'notification_preferences': forms.Textarea(attrs={'class': 'form-control'}),
+            'notification_preferences': forms.Select(attrs={'class': 'form-control', 'readonly': True, }),
             'profile_information': forms.Textarea(attrs={'class': 'form-control'}),
             'username_email': forms.TextInput(attrs={'class': 'form-control'}),
-            'password': forms.TextInput(attrs={'class': 'form-control'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'render_value': True}),
             'privacy_settings': forms.Textarea(attrs={'class': 'form-control'}),
             'security_preferences': forms.Textarea(attrs={'class': 'form-control'}),
             'access_control': forms.Textarea(attrs={'class': 'form-control'}),
@@ -101,10 +153,13 @@ class UserSettingsDetails(forms.ModelForm):
             'language': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'time_zone': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'date_format': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
+            # 'notification_preferences': forms.Select(attrs={'class': 'form-control', 'readonly': True}),
+            
             'notification_preferences': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
+            
             'profile_information': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'username_email': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
-            'password': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
+            'password': forms.TextInput(attrs={'class': 'form-control-plaintext', 'type': 'password','readonly': True}),
             'privacy_settings': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'security_preferences': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'access_control': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
@@ -196,8 +251,9 @@ class UserMembershipForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'user': forms.TextInput(attrs={'class': 'form-control'}),
-            'membership_type': forms.TextInput(attrs={'class': 'form-control'}),
+            'membership_type': forms.Select(attrs={'class': 'form-control'}),
             'expiration_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'renewal_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'is_trial': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'payment_status': forms.Select(attrs={'class': 'form-control'}),
@@ -210,6 +266,7 @@ class UserMembershipDetails(UserMembershipForm):
             'user': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'membership_type': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'expiration_date': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
+            'renewal_date': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input', 'disabled': True}),
             'is_trial': forms.CheckboxInput(attrs={'class': 'form-check-input', 'disabled': True}),
             'payment_status': forms.TextInput(attrs={'class': 'form-control-plaintext', 'readonly': True}),
