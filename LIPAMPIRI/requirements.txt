@@ -11,3 +11,4 @@ phonenumbers
 django-phonenumber-field
 django-countries
 python-dateutil
+mysqlclient

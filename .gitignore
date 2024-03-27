@@ -3,6 +3,3 @@ db.sqlite3
 
 # Ignore the .env file
 .env
-
-# Project Hidden DB
-LIPAMPIRI/db.sqlite3
