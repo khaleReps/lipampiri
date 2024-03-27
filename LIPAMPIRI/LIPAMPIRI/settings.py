@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     # Custom Apps 
     'journal',
+    'drivers_logbook',
     'accounts'
 ]
 
