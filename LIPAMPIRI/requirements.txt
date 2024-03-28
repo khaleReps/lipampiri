@@ -11,4 +11,4 @@ phonenumbers
 django-phonenumber-field
 django-countries
 python-dateutil
-mysqlclient
+# mysqlclient==2.2.4

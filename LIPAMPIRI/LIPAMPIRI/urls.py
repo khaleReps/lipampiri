@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  
     path('', include('journal.urls')),
-    path('', include('drivers_logbook.urls')),
+    path('logbook', include('drivers_logbook.urls')),
     path('api/', include('journal.urls')),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

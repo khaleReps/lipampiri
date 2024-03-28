@@ -1,43 +1,43 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from rest_framework import viewsets
 from .models import Entry
 from .forms import EntryForm
+from .serializers import EntrySerializer
 
-@login_required
-def entry_list(request):
-    entries = Entry.objects.all()
-    return render(request, 'journal/entry_list.html', {'entries': entries})
+class EntryViewSet(viewsets.ModelViewSet):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
 
-@login_required
-def entry_detail(request, pk):
-    entry = get_object_or_404(Entry, pk=pk)
-    return render(request, 'journal/entry_detail.html', {'entry': entry})
+    def list(self, request):
+        entries = self.queryset
+        return render(request, 'journal/entry_list.html', {'entries': entries})
 
-@login_required
-def entry_create(request):
-    if request.method == 'POST':
-        form = EntryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('journal:entry_list')
-    else:
-        form = EntryForm()
-    return render(request, 'journal/entry_form.html', {'form': form})
+    def retrieve(self, request, pk=None):
+        entry = get_object_or_404(self.queryset, pk=pk)
+        return render(request, 'journal/entry_detail.html', {'entry': entry})
 
-@login_required
-def entry_edit(request, pk):
-    entry = get_object_or_404(Entry, pk=pk)
-    if request.method == 'POST':
-        form = EntryForm(request.POST, instance=entry)
-        if form.is_valid():
-            form.save()
-            return redirect('journal:entry_detail', pk=pk) 
-    else:
-        form = EntryForm(instance=entry)
-    return render(request, 'journal/entry_form.html', {'form': form})
+    def create(self, request):
+        if request.method == 'POST':
+            form = EntryForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('journal:entry-list')  # Corrected view name
+        else:
+            form = EntryForm()
+        return render(request, 'journal/entry_form.html', {'form': form})
 
-@login_required
-def entry_delete(request, pk):
-    entry = get_object_or_404(Entry, pk=pk)
-    entry.delete()
-    return redirect('journal:entry_list')
+    def update(self, request, pk=None):
+        entry = get_object_or_404(self.queryset, pk=pk)
+        if request.method == 'POST':
+            form = EntryForm(request.POST, instance=entry)
+            if form.is_valid():
+                form.save()
+                return redirect('journal:entry-detail', pk=pk)  # Corrected view name
+        else:
+            form = EntryForm(instance=entry)
+        return render(request, 'journal/entry_form.html', {'form': form})
+
+    def destroy(self, request, pk=None):
+        entry = get_object_or_404(self.queryset, pk=pk)
+        entry.delete()
+        return redirect('journal:entry-list')  # Corrected view name
